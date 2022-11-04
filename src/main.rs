@@ -1,4 +1,5 @@
 use std::env;
+use std::process::exit;
 use regex::Regex;
 
 fn find_durations(text: &str) -> Vec<&str> {
@@ -34,10 +35,21 @@ fn duration_as_secs(duration: &str) -> u32 {
 }
 
 fn main() {
+    let mut out_lines = Vec::new();
+
     for arg in env::args().skip(1) {
         for duration in find_durations(&arg) {
             let secs = duration_as_secs(duration);
-            println!("{duration} = {secs}")
+            out_lines.push(format!("{duration} = {secs}"));
         }
+    }
+
+    if out_lines.is_empty() {
+        eprintln!("No durations found in input");
+        exit(1);
+    }
+
+    for out_line in out_lines {
+        println!("{out_line}");
     }
 }
