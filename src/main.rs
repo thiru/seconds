@@ -17,7 +17,7 @@ fn find_durations(text: &str) -> Vec<&str> {
         return Vec::new();
     }
 
-    let re = Regex::new(r"(\d\d:\d\d:\d\d)").unwrap();
+    let re = Regex::new(r"(\b\d+:\d\d:\d\d(?:\.\d*)?)").unwrap();
 
     let durations: Vec<&str> = re.find_iter(text)
         .map(|match_| match_.as_str())
@@ -26,9 +26,9 @@ fn find_durations(text: &str) -> Vec<&str> {
     return durations;
 }
 
-fn duration_as_secs(duration: &str) -> u32 {
+fn duration_as_secs(duration: &str) -> f32 {
     if duration.is_empty() {
-        return 0
+        return 0.0
     }
 
     let re = Regex::new(r":").unwrap();
@@ -37,11 +37,11 @@ fn duration_as_secs(duration: &str) -> u32 {
 
     assert_eq!(parts.len(), 3);
 
-    let hours: u32 = parts[0].parse().unwrap();
-    let minutes: u32 = parts[1].parse().unwrap();
-    let seconds: u32 = parts[2].parse().unwrap();
+    let hours: f32 = parts[0].parse().unwrap();
+    let minutes: f32 = parts[1].parse().unwrap();
+    let seconds: f32 = parts[2].parse().unwrap();
 
-    return (hours * 3600) + (minutes * 60) + seconds;
+    return (hours * 3600.0) + (minutes * 60.0) + seconds;
 }
 
 fn process_input(text: &str) -> Vec<String> {
