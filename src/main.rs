@@ -33,7 +33,7 @@ fn duration_as_secs(duration: &str) -> u32 {
 
     let parts: Vec<&str> = re.split(duration).collect();
 
-    assert!(parts.len() == 3);
+    assert_eq!(parts.len(), 3);
 
     let hours: u32 = parts[0].parse().unwrap();
     let minutes: u32 = parts[1].parse().unwrap();
@@ -42,22 +42,32 @@ fn duration_as_secs(duration: &str) -> u32 {
     return (hours * 3600) + (minutes * 60) + seconds;
 }
 
-fn main() {
-    let cli = Cli::parse();
+fn process_input(text: &str) -> Vec<String> {
+    let mut output_lines = Vec::new();
 
-    let mut out_lines = Vec::new();
-
-    for duration in find_durations(&cli.input) {
+    for duration in find_durations(text) {
         let secs = duration_as_secs(duration);
-        out_lines.push(format!("{duration} = {secs}"));
+        output_lines.push(format!("{duration} => {secs}"));
     }
 
-    if out_lines.is_empty() {
+    output_lines
+}
+
+fn display_and_exit(output_lines: Vec<String>) {
+    if output_lines.is_empty() {
         eprintln!("No durations found in input");
         exit(1);
     }
 
-    for out_line in out_lines {
+    for out_line in output_lines {
         println!("{out_line}");
     }
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    let output_lines = process_input(&cli.input);
+
+    display_and_exit(output_lines);
 }
