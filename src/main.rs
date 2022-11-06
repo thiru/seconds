@@ -9,7 +9,7 @@ use regex::Regex;
 struct Cli {
     /// Text containing one or more durations
     /// (read from stdin if not provided here)
-    input: Option<String>
+    input: Vec<String>
 }
 
 fn find_durations(text: &str) -> Vec<&str> {
@@ -95,7 +95,7 @@ fn read_stdin() -> String {
 fn main() {
     let cli = Cli::parse();
 
-    let input = cli.input.unwrap_or_else(read_stdin);
+    let input = if cli.input.is_empty() { read_stdin() } else { cli.input.join(" ") };
 
     let output_lines = process_input(&input);
 
