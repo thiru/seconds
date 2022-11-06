@@ -2,10 +2,10 @@
 name = "seconds"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Thiru T."]
 
 [dependencies]
+clap = { version = "4.0.19", features = ["cargo", "derive"] }
 regex = "1"
 
 [dev-dependencies]

@@ -1,6 +1,14 @@
-use std::env;
+use clap::Parser;
 use std::process::exit;
 use regex::Regex;
+
+/// Convert durations to seconds (e.g. 01:00:05 => 3605)
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    /// Text containing one or more durations
+    input: String
+}
 
 fn find_durations(text: &str) -> Vec<&str> {
     if text.is_empty() {
@@ -35,13 +43,13 @@ fn duration_as_secs(duration: &str) -> u32 {
 }
 
 fn main() {
+    let cli = Cli::parse();
+
     let mut out_lines = Vec::new();
 
-    for arg in env::args().skip(1) {
-        for duration in find_durations(&arg) {
-            let secs = duration_as_secs(duration);
-            out_lines.push(format!("{duration} = {secs}"));
-        }
+    for duration in find_durations(&cli.input) {
+        let secs = duration_as_secs(duration);
+        out_lines.push(format!("{duration} = {secs}"));
     }
 
     if out_lines.is_empty() {
