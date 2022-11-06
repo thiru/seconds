@@ -1,4 +1,5 @@
 use clap::Parser;
+use std::io::{self, BufRead};
 use std::process::exit;
 use regex::Regex;
 
@@ -7,7 +8,8 @@ use regex::Regex;
 #[command(author, version, about, long_about = None)]
 struct Cli {
     /// Text containing one or more durations
-    input: String
+    /// (read from stdin if not provided here)
+    input: Option<String>
 }
 
 fn find_durations(text: &str) -> Vec<&str> {
@@ -64,10 +66,38 @@ fn display_and_exit(output_lines: Vec<String>) {
     }
 }
 
+fn read_stdin() -> String {
+    eprintln!("Reading from stdin...");
+
+    let mut lines = io::stdin().lock().lines();
+    let mut user_input = String::new();
+
+    while let Some(line) = lines.next() {
+        let last_input = line.unwrap();
+
+        // stop reading
+        if last_input.len() == 0 {
+            break;
+        }
+
+        // add a new line once user_input starts storing user input
+        if user_input.len() > 0 {
+            user_input.push_str("\n");
+        }
+
+        // store user input
+        user_input.push_str(&last_input);
+    }
+
+    user_input
+}
+
 fn main() {
     let cli = Cli::parse();
 
-    let output_lines = process_input(&cli.input);
+    let input = cli.input.unwrap_or_else(read_stdin);
+
+    let output_lines = process_input(&input);
 
     display_and_exit(output_lines);
 }

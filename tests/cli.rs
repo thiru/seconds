@@ -7,7 +7,7 @@ fn fails_when_no_args() {
     let mut cmd = Command::cargo_bin(crate_name!()).unwrap();
     cmd.assert()
         .failure()
-        .stderr(predicate::str::contains("Usage"));
+        .stderr(predicate::str::contains("No durations"));
 }
 
 #[test]
